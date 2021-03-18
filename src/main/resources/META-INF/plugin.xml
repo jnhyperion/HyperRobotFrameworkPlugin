@@ -6,14 +6,119 @@
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.python</depends>
+    <depends>PythonCore</depends>
+
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.jnhyperion.hyperrobotframeworkplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.jnhyperion.hyperrobotframeworkplugin.services.MyProjectService"/>
+
+        <projectConfigurable groupId="language"
+                             instance="com.github.jnhyperion.hyperrobotframeworkplugin.ide.config.RobotConfiguration"/>
+        <projectService
+                serviceImplementation="com.github.jnhyperion.hyperrobotframeworkplugin.ide.config.RobotOptionsProvider"/>
+
+        <fileTypeFactory implementation="com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotFileTypeHandler"/>
+        <colorSettingsPage implementation="com.github.jnhyperion.hyperrobotframeworkplugin.ide.config.RobotColorsPage"/>
+
+        <!-- IDE Hooks -->
+        <completion.contributor language="Robot"
+                                implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.RobotCompletionContributor"/>
+        <lang.findUsagesProvider language="Robot"
+                                 implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.usage.RobotFindUsagesProvider"/>
+        <fileStructureGroupRuleProvider
+                implementation="com.github.jnhyperion.hyperrobotframeworkplugin.ide.usage.RobotKeywordGroupingRuleProvider"/>
+        <referencesSearch
+                implementation="com.github.jnhyperion.hyperrobotframeworkplugin.ide.search.RobotPythonReferenceSearch"/>
+
+        <lang.syntaxHighlighterFactory language="Robot"
+                                       implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotSyntaxHighlightingFactory"/>
+        <lang.commenter language="Robot"
+                        implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.RobotCommenter"/>
+        <lang.foldingBuilder language="Robot"
+                             implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.RobotFoldingBuilder"/>
+        <lang.parserDefinition language="Robot"
+                               implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotParserDefinition"/>
+        <lang.psiStructureViewFactory language="Robot"
+                                      implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.structure.RobotStructureViewFactory"/>
+
+        <!-- Manipulators -->
+        <lang.elementManipulator forClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordInvokable"
+                                 implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.manip.KeywordInvokableManipulator"/>
+        <lang.elementManipulator forClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.Argument"
+                                 implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.manip.ArgumentManipulator"/>
+        <lang.elementManipulator forClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.Variable"
+                                 implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.psi.manip.VariableManipulator"/>
+
+        <!-- Inspections -->
+        <!-- Inspections: Compilation -->
+        <localInspection language="Robot" shortName="RobotKeywordNotFound"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.keyword.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.compilation.RobotKeywordNotFound"/>
+        <localInspection language="Robot" shortName="RobotVariableNotFound"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.variable.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.compilation.RobotVariableNotFound"/>
+        <localInspection language="Robot" shortName="RobotImportNotFound"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.import.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.compilation.RobotImportNotFound"/>
+        <!-- TODO: inspection: error?: resource import is not a robot file -->
+        <!-- TODO: inspection: warn: import python file vs class -->
+        <!-- Inspections: Cleanup -->
+        <localInspection language="Robot" shortName="RobotImportNotUsed"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.import.unused" groupPath="Robot" groupKey="INSP.GROUP.cleanup"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.cleanup.RobotImportNotUsed"/>
+        <!-- Inspections: Readability -->
+        <localInspection language="Robot" shortName="RobotGherkinInspection"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.gherkin.format" groupPath="Robot" groupKey="INSP.GROUP.readability"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.readability.RobotGherkinInspection"/>
+        <localInspection language="Robot" shortName="RobotKeywordDefinitionStartingWithGherkin"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.define.keyword.gherkin.start" groupPath="Robot"
+                         groupKey="INSP.GROUP.readability" enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.readability.RobotKeywordDefinitionStartingWithGherkin"/>
+        <!-- TODO: inspection: warn: use of I in keyword; decreased readability -->
+        <!-- TODO: inspection: warn: keyword starting with upper case; decreased readability -->
+        <!-- TODO: inspection: warn: scenario step does not start with gherkin; decreased readability -->
+        <!-- TODO: inspection: warn: scenario step is not a keyword (ie variable); decreased readability -->
+        <!-- TODO: inspection: warn: scenario step contains arguments; decreased readability -->
+        <!-- Inspections: Complexity -->
+        <!-- TODO: inspection: warn: keyword definitions that contain gherkin; trying to do too much -->
+        <!-- TODO: inspection: warn: scenarios longer than X lines; trying to do too much -->
+        <localInspection language="Robot" shortName="RobotNestedVariable"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.variable.nested" groupPath="Robot" groupKey="INSP.GROUP.complexity"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.complexity.RobotNestedVariable"/>
+        <localInspection language="Robot" shortName="RobotNestedVariableDefinition"
+                         bundle="messages.RobotBundle"
+                         key="INSP.NAME.variableDefinition.nested" groupPath="Robot" groupKey="INSP.GROUP.complexity"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.complexity.RobotNestedVariableDefinition"/>
+        <!-- Inspections: Deprecated -->
+        <!-- TODO: inspection: warn: deprecated settings; '*** user keywords ***', timeout, etc -->
+
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.jnhyperion.hyperrobotframeworkplugin.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <!--    <applicationListeners>-->
+    <!--        <listener class="com.github.jnhyperion.hyperrobotframeworkplugin.listeners.MyProjectManagerListener"-->
+    <!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
+    <!--    </applicationListeners>-->
 </idea-plugin>

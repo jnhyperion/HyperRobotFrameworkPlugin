@@ -2,11 +2,14 @@ package com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.compilat
 
 import com.github.jnhyperion.hyperrobotframeworkplugin.RobotBundle;
 import com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.SimpleRobotInspection;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordStatement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordInvokable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 /**
  * @author mrubino
@@ -30,14 +33,8 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
             }
 
             String text = ((KeywordInvokable) element).getPresentableText();
-            if (text.startsWith(":")) {
-                // TODO: for loops
-                return true;
-            } else if (text.startsWith("\\")) {
-                // TODO: for loops
-                return true;
-            }
-            return false;
+            final String[] RESERVED_KW = {"FOR", "END", "IF", "ELSE", "ELSE IF"};
+            return Arrays.asList(RESERVED_KW).contains(text);
         } else {
             return true;
         }

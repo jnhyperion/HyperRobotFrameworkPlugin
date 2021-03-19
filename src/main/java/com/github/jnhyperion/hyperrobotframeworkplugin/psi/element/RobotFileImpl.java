@@ -116,7 +116,7 @@ public class RobotFileImpl extends PsiFileBase implements RobotFile, KeywordFile
     }
 
     @NotNull
-    private Collection<Heading> getHeadings() {
+    public Collection<Heading> getHeadings() {
         Collection<Heading> results = this.headings;
         if (results == null) {
             PerformanceCollector debug = new PerformanceCollector(this, "headings");

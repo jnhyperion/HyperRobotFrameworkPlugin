@@ -62,7 +62,7 @@
                          bundle="messages.RobotBundle"
                          key="INSP.NAME.variable.undefined" groupPath="Robot" groupKey="INSP.GROUP.compilation"
                          enabledByDefault="true"
-                         level="ERROR"
+                         level="INFO"
                          implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.compilation.RobotVariableNotFound"/>
         <localInspection language="Robot" shortName="RobotImportNotFound"
                          bundle="messages.RobotBundle"
@@ -114,11 +114,9 @@
                          implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.inspections.complexity.RobotNestedVariableDefinition"/>
         <!-- Inspections: Deprecated -->
         <!-- TODO: inspection: warn: deprecated settings; '*** user keywords ***', timeout, etc -->
+        <runConfigurationProducer implementation="com.github.jnhyperion.hyperrobotframeworkplugin.ide.execution.RobotRunConfigurationProducer"/>
+        <runLineMarkerContributor language="Robot" id="gradleGroovyRunLineMarkerProvider"
+                                  implementationClass="com.github.jnhyperion.hyperrobotframeworkplugin.ide.execution.RobotRunLineMarkerProvider"/>
 
     </extensions>
-
-    <!--    <applicationListeners>-->
-    <!--        <listener class="com.github.jnhyperion.hyperrobotframeworkplugin.listeners.MyProjectManagerListener"-->
-    <!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
-    <!--    </applicationListeners>-->
 </idea-plugin>

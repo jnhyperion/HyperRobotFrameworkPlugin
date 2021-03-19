@@ -46,14 +46,6 @@ public class RobotVariableNotFound extends SimpleRobotInspection {
                 container = container.getParent();
             }
             if (container instanceof KeywordStatement) {
-                KeywordInvokable invokable = ((KeywordStatement) container).getInvokable();
-                String text = invokable == null ? null : invokable.getPresentableText();
-                if (text != null) {
-                    String[] RESERVED_KW = {"FOR", "END", "IF", "ELSE", "ELSE IF"};
-                    if(Arrays.asList(RESERVED_KW).contains(text)) {
-                        return true;
-                    }
-                }
                 // this is the case where we have a 'set test variable' call with more than one arg
                 // the first is the variable name, the second is the value
                 // if there is only one argument then we might want to see where it was created

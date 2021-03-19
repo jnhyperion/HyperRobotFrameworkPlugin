@@ -5,6 +5,7 @@ import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.DefinedKeywor
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.Heading;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordDefinitionImpl;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.RobotFileImpl;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.util.RobotUtil;
 import com.intellij.execution.lineMarker.ExecutorAction;
 import com.intellij.execution.lineMarker.RunLineMarkerContributor;
 import com.intellij.icons.AllIcons;
@@ -29,7 +30,7 @@ public class RobotRunLineMarkerProvider extends RunLineMarkerContributor {
             PsiElement targetElement = element.getParent().getParent();
             if (element instanceof LeafElement &&
                     targetElement instanceof KeywordDefinitionImpl) {
-                Collection<DefinedKeyword> testCases = getTestCasesInCurrentFile(element);
+                Collection<DefinedKeyword> testCases = RobotUtil.getTestCasesFromElement(element);
                 for (DefinedKeyword testCase: testCases) {
                     if (testCase.getKeywordName().equals(element.getText())) {
                         final AnAction[] actions = ExecutorAction.getActions();
@@ -42,15 +43,5 @@ public class RobotRunLineMarkerProvider extends RunLineMarkerContributor {
         return null;
     }
 
-    private Collection<DefinedKeyword> getTestCasesInCurrentFile(@NotNull PsiElement element) {
-        PsiFile psiFile = element.getContainingFile();
-        if (psiFile instanceof RobotFileImpl) {
-            for(Heading heading: ((RobotFileImpl) psiFile).getHeadings()) {
-                if (heading.containsTestCases()) {
-                    return heading.getTestCases();
-                }
-            }
-        }
-        return new LinkedHashSet<>();
-    }
+
 }

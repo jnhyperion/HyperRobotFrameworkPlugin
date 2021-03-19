@@ -1,5 +1,10 @@
 package com.github.jnhyperion.hyperrobotframeworkplugin.ide.execution;
 
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotFeatureFileType;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.DefinedKeyword;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordDefinitionIdImpl;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordDefinitionImpl;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.util.RobotUtil;
 import com.intellij.execution.Location;
 import com.intellij.execution.actions.ConfigurationContext;
 import com.intellij.execution.actions.LazyRunConfigurationProducer;
@@ -11,8 +16,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.python.run.PythonConfigurationType;
 import com.jetbrains.python.run.PythonRunConfiguration;
-import com.jetbrains.python.actions.PyExecuteSelectionAction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public class RobotRunConfigurationProducer extends LazyRunConfigurationProducer<PythonRunConfiguration> {
 
@@ -20,89 +27,83 @@ public class RobotRunConfigurationProducer extends LazyRunConfigurationProducer<
     protected boolean setupConfigurationFromContext(@NotNull PythonRunConfiguration runConfig,
                                                     @NotNull ConfigurationContext context,
                                                     @NotNull Ref<PsiElement> sourceElement) {
-        Location<?> location = context.getLocation();
-        if (location == null) {
-            return false;
-        }
-        runConfig.setUseModuleSdk(false);
-        runConfig.setModuleMode(true);
-        runConfig.setScriptName("robot.run");
-        runConfig.setWorkingDirectory(context.getProject().getBasePath());
-        VirtualFile file = location.getVirtualFile();
-        if (file == null) {
-            return false;
-        }
-        String pathFile = file.getPath().replace(context.getProject().getBasePath() + "/", "");
-        String testCaseName = getTestCaseName(context);
-        runConfig.setScriptParameters(buildParameters(testCaseName, pathFile));
 
-        Sdk sdk = ProjectRootManager.getInstance(context.getProject()).getProjectSdk();
-        if (sdk != null) {
-            runConfig.setSdkHome(sdk.getHomePath());//runConfig.setSdk(sdk);
-        }
-        // robot file
-        if (testCaseName.startsWith("***")) {
-            return false;
-        }
-
-        runConfig.setName(testCaseName);
-
-        if (file.getName().endsWith(".robot")) {
+        String runParam = getRunParameters(context);
+        if (runParam != null) {
+            runConfig.setUseModuleSdk(false);
+            runConfig.setModuleMode(true);
+            runConfig.setScriptName("robot.run");
+            runConfig.setWorkingDirectory(context.getProject().getBasePath());
+            runConfig.setScriptParameters(runParam);
+            Sdk sdk = ProjectRootManager.getInstance(context.getProject()).getProjectSdk();
+            if (sdk != null) {
+                runConfig.setSdkHome(sdk.getHomePath());
+            }
+            runConfig.setName(getTestCaseName(context));
             return true;
         }
         return false;
     }
 
-    public String buildParameters(String testCaseName, String scriptFileName) {
-        return " -t \"" + testCaseName + "\" " + scriptFileName;
+    @Nullable
+    private String getRunParameters(ConfigurationContext context) {
+        Location<?> location = context.getLocation();
+        if (location == null) {
+            return null;
+        }
+        VirtualFile file = location.getVirtualFile();
+        if (file == null) {
+            return null;
+        }
+        if (!(file.getFileType() instanceof RobotFeatureFileType)) {
+            return null;
+        }
+        Collection<DefinedKeyword> testCases = RobotUtil.getTestCasesFromElement(location.getPsiElement());
+        if (testCases.isEmpty()) {
+            // do not have test case
+            return null;
+        }
+        String projectName = context.getProject().getName();
+        String suitePathName = file.getPath()
+                .replace(context.getProject().getBasePath() + "/", "")
+                .replace("/", ".");
+        suitePathName = suitePathName.substring(0, suitePathName.lastIndexOf('.'));
+        String suiteName = projectName + "." + suitePathName;
+        String testCaseName = getTestCaseName(context);
+        return !testCaseName.equals("") ? "--test \"" + suiteName + "." + testCaseName + "\" ." :
+                "--suite \"" + suiteName + "\" .";
     }
 
     @Override
     public boolean isConfigurationFromContext(@NotNull PythonRunConfiguration runConfig,
                                               @NotNull ConfigurationContext context) {
-        Location<?> location = context.getLocation();
-        if (location == null) {
-            return false;
+        String runParam = getRunParameters(context);
+        if (runParam != null) {
+            return runConfig.getScriptParameters().trim().
+                    equals(runParam.trim());
         }
-
-        VirtualFile file = location.getVirtualFile();
-        if (file == null) {
-            return false;
-        }
-
-        String pathFile = file.getPath().replace(context.getProject().getBasePath() + "/", "");
-        if (runConfig.getScriptParameters().trim().equals(buildParameters(getTestCaseName(context), pathFile).trim())) {
-            return true;
-        }
-
         return false;
     }
 
     private String getTestCaseName(ConfigurationContext context) {
-        Location location = context.getLocation();
-        VirtualFile file = location.getVirtualFile();
-        if (file.getName().endsWith(".robot")) {
-            PsiElement e = location.getPsiElement();
-            String text = e.getText();
-            String pText1 = e.getParent().getText();
-            String pText2 = e.getParent().getParent().getText();
-            String pText3 = e.getParent().getParent().getParent().getText();
-            if (pText1.contains("\n")) {
-                return pText1.split("\n")[0];
-            }
-            if (pText2.contains("\n")) {
-                return pText2.split("\n")[0];
-            }
-            if (pText3.contains("\n")) {
-                return pText3.split("\n")[0];
-            }
-            while (text.startsWith(" ") || text.startsWith("\t") || text.startsWith("\n") || text.equals("")) {
-                e = e.getPrevSibling();
-                text = e.getText();
-            }
-            return text;
+        Location<?> location = context.getLocation();
+        if (location != null) {
+            return getKeywordNameFromAnyElement(location.getPsiElement());
         }
         return "";
+    }
+
+    @NotNull
+    private String getKeywordNameFromAnyElement(PsiElement element) {
+        while (true) {
+            if (element instanceof KeywordDefinitionImpl) {
+                return ((KeywordDefinitionImpl) element).getKeywordName();
+            }
+            element = element.getParent();
+            if (element == null) {
+                return "";
+            }
+        }
     }
 
 

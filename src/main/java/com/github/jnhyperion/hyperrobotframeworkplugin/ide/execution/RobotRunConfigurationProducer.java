@@ -2,7 +2,6 @@ package com.github.jnhyperion.hyperrobotframeworkplugin.ide.execution;
 
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotFeatureFileType;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.DefinedKeyword;
-import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordDefinitionIdImpl;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.KeywordDefinitionImpl;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.util.RobotUtil;
 import com.intellij.execution.Location;
@@ -17,7 +16,6 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.python.run.PythonConfigurationType;
 import com.jetbrains.python.run.PythonRunConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -27,9 +25,8 @@ public class RobotRunConfigurationProducer extends LazyRunConfigurationProducer<
     protected boolean setupConfigurationFromContext(@NotNull PythonRunConfiguration runConfig,
                                                     @NotNull ConfigurationContext context,
                                                     @NotNull Ref<PsiElement> sourceElement) {
-
-        String runParam = getRunParameters(context);
-        if (runParam != null) {
+        if (isValidRobotExecutableScript(context)) {
+            String runParam = getRunParameters(context);
             runConfig.setUseModuleSdk(false);
             runConfig.setModuleMode(true);
             runConfig.setScriptName("robot.run");
@@ -39,53 +36,79 @@ public class RobotRunConfigurationProducer extends LazyRunConfigurationProducer<
             if (sdk != null) {
                 runConfig.setSdkHome(sdk.getHomePath());
             }
-            runConfig.setName(getTestCaseName(context));
+            runConfig.setName(getRunDisplayName(context));
             return true;
         }
         return false;
     }
 
-    @Nullable
-    private String getRunParameters(ConfigurationContext context) {
-        Location<?> location = context.getLocation();
-        if (location == null) {
-            return null;
-        }
-        VirtualFile file = location.getVirtualFile();
-        if (file == null) {
-            return null;
-        }
-        if (!(file.getFileType() instanceof RobotFeatureFileType)) {
-            return null;
-        }
-        Collection<DefinedKeyword> testCases = RobotUtil.getTestCasesFromElement(location.getPsiElement());
-        if (testCases.isEmpty()) {
-            // do not have test case
-            return null;
-        }
-        String projectName = context.getProject().getName();
-        String suitePathName = file.getPath()
-                .replace(context.getProject().getBasePath() + "/", "")
-                .replace("/", ".");
-        suitePathName = suitePathName.substring(0, suitePathName.lastIndexOf('.'));
-        String suiteName = projectName + "." + suitePathName;
+    @NotNull
+    private static String getRunParameters(ConfigurationContext context) {
+        String suiteName = getSuiteName(context);
         String testCaseName = getTestCaseName(context);
         return !testCaseName.equals("") ? "--test \"" + suiteName + "." + testCaseName + "\" ." :
                 "--suite \"" + suiteName + "\" .";
     }
 
+    @NotNull
+    private static String getRunDisplayName(ConfigurationContext context) {
+        Location<?> location = context.getLocation();
+        assert location != null;
+        VirtualFile file = location.getVirtualFile();
+        assert file != null;
+        String testCaseName = getTestCaseName(context);
+        return !testCaseName.equals("") ? testCaseName : file.getName();
+    }
+
+    @NotNull
+    private static String getSuiteName(ConfigurationContext context) {
+        String projectName = context.getProject().getName();
+        Location<?> location = context.getLocation();
+        assert location != null;
+        VirtualFile file = location.getVirtualFile();
+        assert file != null;
+        String suitePathName = file.getPath()
+                .replace(context.getProject().getBasePath() + "/", "")
+                .replace("/", ".");
+        suitePathName = suitePathName.substring(0, suitePathName.lastIndexOf('.'));
+        return projectName + "." + suitePathName;
+    }
+
     @Override
     public boolean isConfigurationFromContext(@NotNull PythonRunConfiguration runConfig,
                                               @NotNull ConfigurationContext context) {
-        String runParam = getRunParameters(context);
-        if (runParam != null) {
-            return runConfig.getScriptParameters().trim().
-                    equals(runParam.trim());
+        if (isValidRobotExecutableScript(context)) {
+            String runParam = getRunParameters(context);
+            boolean ret = runParam.trim().
+                    equals(runConfig.getScriptParameters().trim());
+            if (ret) {
+                runConfig.setName(getRunDisplayName(context));
+            }
+            return ret;
         }
         return false;
     }
 
-    private String getTestCaseName(ConfigurationContext context) {
+    private boolean isValidRobotExecutableScript(@NotNull ConfigurationContext context) {
+        Location<?> location = context.getLocation();
+        if (location == null) {
+            return false;
+        }
+        PsiElement psiElement = location.getPsiElement();
+        VirtualFile file = location.getVirtualFile();
+        if (file == null) {
+            return false;
+        }
+        if (!(file.getFileType() instanceof RobotFeatureFileType)) {
+            return false;
+        }
+        Collection<DefinedKeyword> testCases = RobotUtil.getTestCasesFromElement(psiElement);
+        // do not have test case
+        return !testCases.isEmpty();
+    }
+
+    @NotNull
+    private static String getTestCaseName(@NotNull ConfigurationContext context) {
         Location<?> location = context.getLocation();
         if (location != null) {
             return getKeywordNameFromAnyElement(location.getPsiElement());
@@ -94,7 +117,7 @@ public class RobotRunConfigurationProducer extends LazyRunConfigurationProducer<
     }
 
     @NotNull
-    private String getKeywordNameFromAnyElement(PsiElement element) {
+    private static String getKeywordNameFromAnyElement(PsiElement element) {
         while (true) {
             if (element instanceof KeywordDefinitionImpl) {
                 return ((KeywordDefinitionImpl) element).getKeywordName();

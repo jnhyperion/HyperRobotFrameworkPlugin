@@ -10,15 +10,15 @@ import javax.swing.*;
 /**
  * @author mrubino
  */
-public class RobotResFileType extends LanguageFileType {
+public class RobotResourceFileType extends LanguageFileType {
 
-    private static final RobotResFileType INSTANCE = new RobotResFileType();
+    private static final RobotResourceFileType INSTANCE = new RobotResourceFileType();
 
-    private RobotResFileType() {
+    private RobotResourceFileType() {
         super(RobotLanguage.INSTANCE);
     }
 
-    public static RobotResFileType getInstance() {
+    public static RobotResourceFileType getInstance() {
         return INSTANCE;
     }
 
@@ -39,6 +39,6 @@ public class RobotResFileType extends LanguageFileType {
 
     @Nullable
     public Icon getIcon() {
-        return RobotIcons.FILE;
+        return RobotIcons.RESOURCE;
     }
 }

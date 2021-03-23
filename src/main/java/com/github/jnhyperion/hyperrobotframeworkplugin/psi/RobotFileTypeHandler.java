@@ -12,6 +12,6 @@ public class RobotFileTypeHandler extends FileTypeFactory {
     @Override
     public void createFileTypes(@NotNull FileTypeConsumer consumer) {
         consumer.consume(RobotFeatureFileType.getInstance());
-        consumer.consume(RobotResFileType.getInstance());
+        consumer.consume(RobotResourceFileType.getInstance());
     }
 }

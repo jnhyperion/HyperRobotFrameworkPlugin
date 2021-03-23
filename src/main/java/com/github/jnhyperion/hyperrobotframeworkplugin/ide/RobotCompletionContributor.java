@@ -59,7 +59,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
+                                                  @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
                         addSyntaxLookup(RobotTokenTypes.HEADING, results, NEW_LINE);
                     }
@@ -70,7 +70,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
+                                                  @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
                         // TODO: some brackets are only for Test Cases, some only Keywords, some both
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
@@ -85,7 +85,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
+                                                  @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
                         if (isInSettings(heading)) {
@@ -100,7 +100,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
+                                                  @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
                         if (isInTestCases(heading)) {
@@ -114,7 +114,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
+                                                  @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
                         if (isInTestCases(heading) || isInKeywords(heading)) {
@@ -129,7 +129,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
+                                                  @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
                         if (isInTestCases(heading) || isInKeywords(heading) || isInSettings(heading)) {
@@ -235,7 +235,7 @@ public class RobotCompletionContributor extends CompletionContributor {
             String lookupString = capitalize ? WordUtils.capitalize(text) : text;
             LookupElement element = TailTypeDecorator.withTail(
                     LookupElementBuilder.create(lookupString)
-                            .withLookupString(text)
+                            .withLookupString(lookupString)
                             .withPresentableText(lookupString)
                             .withCaseSensitivity(false),
                     keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);

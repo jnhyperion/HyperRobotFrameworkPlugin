@@ -20,7 +20,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean transitiveImports = true;
         public boolean globalVariables = true;
         public boolean debug = false;
-        public boolean capitalizeKeywords = false;
+        public boolean capitalizeKeywords = true;
         public boolean inlineVariableSearch = false;
     }
 

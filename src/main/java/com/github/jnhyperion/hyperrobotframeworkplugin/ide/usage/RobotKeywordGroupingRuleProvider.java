@@ -21,7 +21,7 @@ public class RobotKeywordGroupingRuleProvider implements FileStructureGroupRuleP
 
     @Nullable
     @Override
-    public UsageGroupingRule getUsageGroupingRule(Project project) {
+    public UsageGroupingRule getUsageGroupingRule(@NotNull Project project) {
         return new RobotKeywordGroupingRule();
     }
 
@@ -36,7 +36,7 @@ public class RobotKeywordGroupingRuleProvider implements FileStructureGroupRuleP
             } else {
                 PsiElement psiElement = ((PsiElementUsage) usage).getElement();
                 KeywordDefinitionImpl definition = PsiTreeUtil.getParentOfType(psiElement, KeywordDefinitionImpl.class, false);
-                return definition == null ? null : new PsiNamedElementUsageGroupBase<KeywordDefinitionImpl>(definition);
+                return definition == null ? null : new PsiNamedElementUsageGroupBase<>(definition);
             }
         }
     }

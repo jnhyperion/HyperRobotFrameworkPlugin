@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.github.jnhyperion.hyperrobotframeworkplugin</id>
-    <name>HyperRobotFrameworkPlugin</name>
+    <name>Hyper RobotFramework Support</name>
     <vendor>jnhyperion</vendor>
 
     <!-- Product and plugin compatibility requirements -->

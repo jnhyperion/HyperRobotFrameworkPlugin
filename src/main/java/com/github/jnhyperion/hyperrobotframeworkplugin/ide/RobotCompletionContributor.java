@@ -118,7 +118,7 @@ public class RobotCompletionContributor extends CompletionContributor {
                                                   @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet results) {
                         PsiElement heading = getHeading(parameters.getOriginalPosition());
-                        if (isInTestCases(heading)) {
+                        if (isInTestCases(heading) || isInKeywords(heading)) {
                             addSyntaxLookup(RobotTokenTypes.SYNTAX_MARKER, results, SUPER_SPACE);
                         }
                     }

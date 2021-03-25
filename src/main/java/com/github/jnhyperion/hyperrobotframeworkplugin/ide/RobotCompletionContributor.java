@@ -16,11 +16,12 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
-import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.*;
 import org.apache.commons.lang.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -216,11 +217,14 @@ public class RobotCompletionContributor extends CompletionContributor {
                 // we only want the first word of the variable
                 String[] words = text.split("\\s+");
                 String lookupString = words.length > 0 ? words[0] : text;
+                String[] lookupStrings = {text, WordUtils.capitalize(text),
+                        text.toLowerCase(),
+                        lookupString, lookupString.toLowerCase()};
                 LookupElement element = TailTypeDecorator.withTail(
                         LookupElementBuilder.create(lookupString)
-                                .withLookupString(text)
+                                .withLookupStrings(Arrays.asList(lookupStrings))
                                 .withPresentableText(lookupString)
-                                .withCaseSensitivity(false),
+                                .withCaseSensitivity(true),
                         TailType.NONE);
                 result.addElement(element);
             }
@@ -233,11 +237,12 @@ public class RobotCompletionContributor extends CompletionContributor {
         for (DefinedKeyword keyword : keywords) {
             String text = keyword.getKeywordName();
             String lookupString = capitalize ? WordUtils.capitalize(text) : text;
+            String[] lookupStrings = {text, WordUtils.capitalize(text), text.toLowerCase()};
             LookupElement element = TailTypeDecorator.withTail(
                     LookupElementBuilder.create(lookupString)
-                            .withLookupString(lookupString)
+                            .withLookupStrings(Arrays.asList(lookupStrings))
                             .withPresentableText(lookupString)
-                            .withCaseSensitivity(false),
+                            .withCaseSensitivity(true),
                     keyword.hasArguments() ? SUPER_SPACE : TailType.NONE);
             result.addElement(element);
         }
@@ -248,11 +253,14 @@ public class RobotCompletionContributor extends CompletionContributor {
         for (RecommendationWord word : words) {
             String text = word.getLookup();
             String lookupString = word.getPresentation();
+            String[] lookupStrings = {text, WordUtils.capitalize(text),
+                    lookupString, WordUtils.capitalize(lookupString),
+                    lookupString.toLowerCase()};
             LookupElement element = TailTypeDecorator.withTail(
                     LookupElementBuilder.create(lookupString)
-                            .withLookupString(text)
+                            .withLookupStrings(Arrays.asList(lookupStrings))
                             .withPresentableText(lookupString)
-                            .withCaseSensitivity(false),
+                            .withCaseSensitivity(true),
                     tail);
             results.addElement(element);
         }

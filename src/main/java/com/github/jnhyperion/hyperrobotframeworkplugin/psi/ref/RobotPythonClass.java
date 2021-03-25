@@ -32,7 +32,7 @@ public class RobotPythonClass extends RobotPythonWrapper implements KeywordFile,
     @NotNull
     @Override
     public Collection<DefinedKeyword> getDefinedKeywords() {
-        final Collection<DefinedKeyword> results = new HashSet<DefinedKeyword>();
+        final Collection<DefinedKeyword> results = new HashSet<>();
         PerformanceCollector debug = new PerformanceCollector(this, "get defined keywords");
         addDefinedKeywords(this.pythonClass, this.library, results);
         debug.complete();

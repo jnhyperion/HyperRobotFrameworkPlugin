@@ -7,16 +7,16 @@ import java.util.*;
 public class RobotKeywordTable {
 
     private final Map<RobotElementType, Set<String>> syntaxByType = new HashMap<RobotElementType, Set<String>>();
-    private final Map<RobotElementType, Set<RecommendationWord>> recommendationsByType = new HashMap<RobotElementType, Set<RecommendationWord>>();
+    private final Map<RobotElementType, Set<RecommendationWord>> recommendationsByType = new HashMap<>();
 
     public void addSyntax(RobotElementType type, String keyword) {
         Set<String> keywords = this.syntaxByType.get(type);
         if (keywords == null) {
             if (type == RobotTokenTypes.GHERKIN) {
                 // this allows syntax for WHEN vs When vs when
-                keywords = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+                keywords = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             } else {
-                keywords = new HashSet<String>();
+                keywords = new HashSet<>();
             }
             this.syntaxByType.put(type, keywords);
         }
@@ -26,7 +26,7 @@ public class RobotKeywordTable {
     public void addRecommendation(@NotNull RobotElementType type, @NotNull String keyword, @NotNull String lookup) {
         Set<RecommendationWord> keywords = this.recommendationsByType.get(type);
         if (keywords == null) {
-            keywords = new HashSet<RecommendationWord>();
+            keywords = new HashSet<>();
             this.recommendationsByType.put(type, keywords);
         }
         keywords.add(new RecommendationWord(keyword, lookup));

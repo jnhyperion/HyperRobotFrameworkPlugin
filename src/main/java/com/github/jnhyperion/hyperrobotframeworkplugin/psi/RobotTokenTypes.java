@@ -5,7 +5,7 @@ import com.intellij.psi.tree.IStubFileElementType;
 
 public interface RobotTokenTypes {
 
-    IFileElementType FILE = new IStubFileElementType(RobotLanguage.INSTANCE);
+    IFileElementType FILE = new IStubFileElementType<>(RobotLanguage.INSTANCE);
     RobotElementType HEADING = new RobotElementType("HEADING");
     RobotElementType SETTING = new RobotElementType("SETTING");
     RobotElementType BRACKET_SETTING = new RobotElementType("BRACKET_SETTING");

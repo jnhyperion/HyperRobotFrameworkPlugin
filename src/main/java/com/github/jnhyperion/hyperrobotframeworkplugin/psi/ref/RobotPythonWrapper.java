@@ -2,6 +2,7 @@ package com.github.jnhyperion.hyperrobotframeworkplugin.psi.ref;
 
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.dto.KeywordDto;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.dto.VariableDto;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.util.ReservedVariableScope;
 import com.intellij.util.Processor;
 import com.jetbrains.python.psi.*;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.DefinedKeyword;
@@ -51,7 +52,8 @@ public abstract class RobotPythonWrapper {
                         String keyword = expression.getName();
                         if (keyword != null && !isPrivate(keyword)) {
                             // not formatted ${X}, assume scalar
-                            results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword), null));
+                            results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword),
+                                    ReservedVariableScope.TestCase));
                         }
                         return true;
                     }

@@ -122,6 +122,18 @@ public class RobotKeywordProvider {
         addRecommendation(RobotTokenTypes.GHERKIN, "Then", "Then");
         addRecommendation(RobotTokenTypes.GHERKIN, "And", "And");
 
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SYNTAX_MARKER, "IF");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SYNTAX_MARKER, "END");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SYNTAX_MARKER, "ELSE");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SYNTAX_MARKER, "ELSE IF");
+        KEYWORD_TABLE.addSyntax(RobotTokenTypes.SYNTAX_MARKER, "FOR");
+
+        addRecommendation(RobotTokenTypes.SYNTAX_MARKER, "IF", "IF");
+        addRecommendation(RobotTokenTypes.SYNTAX_MARKER, "END", "END");
+        addRecommendation(RobotTokenTypes.SYNTAX_MARKER, "ELSE", "ELSE");
+        addRecommendation(RobotTokenTypes.SYNTAX_MARKER, "ELSE IF", "ELSE IF");
+        addRecommendation(RobotTokenTypes.SYNTAX_MARKER, "FOR", "FOR");
+
         GLOBAL_SETTINGS.add("Suite Setup");
         GLOBAL_SETTINGS.add("Suite Precondition");
         GLOBAL_SETTINGS.add("Suite Teardown");

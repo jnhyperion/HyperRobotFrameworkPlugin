@@ -19,6 +19,7 @@ public interface RobotTokenTypes {
     RobotElementType VARIABLE = new RobotElementType("VARIABLE");
     RobotElementType COMMENT = new RobotElementType("COMMENT");
     RobotElementType GHERKIN = new RobotElementType("GHERKIN");
+    RobotElementType SYNTAX_MARKER = new RobotElementType("SYNTAX_MARKER");
     RobotElementType KEYWORD_STATEMENT = new RobotElementType("KEYWORD_STATEMENT");
 
     RobotElementType ERROR = new RobotElementType("ERROR");

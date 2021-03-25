@@ -5,6 +5,7 @@ import com.github.jnhyperion.hyperrobotframeworkplugin.psi.RecommendationWord;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotElementType;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotKeywordProvider;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.RobotTokenTypes;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.dto.ImportType;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.element.*;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.*;
@@ -19,8 +20,6 @@ import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -109,6 +108,22 @@ public class RobotCompletionContributor extends CompletionContributor {
                         }
                     }
                 });
+
+        // This is the rule for adding syntax marker (IF, END)
+        extend(CompletionType.BASIC,
+                psiElement().inFile(psiElement(RobotFile.class)),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters,
+                                                  @NotNull ProcessingContext context,
+                                                  @NotNull CompletionResultSet results) {
+                        PsiElement heading = getHeading(parameters.getOriginalPosition());
+                        if (isInTestCases(heading)) {
+                            addSyntaxLookup(RobotTokenTypes.SYNTAX_MARKER, results, SUPER_SPACE);
+                        }
+                    }
+                });
+
         // This is the rule for adding imported keywords and library methods
         extend(CompletionType.BASIC,
                 psiElement().inFile(psiElement(RobotFile.class)),
@@ -187,7 +202,9 @@ public class RobotCompletionContributor extends CompletionContributor {
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
         for (KeywordFile f : importedFiles) {
-            addKeywordsToResult(f.getDefinedKeywords(), result, capitalize);
+            if (f.getImportType() != ImportType.VARIABLES) {
+                addKeywordsToResult(f.getDefinedKeywords(), result, capitalize);
+            }
         }
     }
 
@@ -201,7 +218,9 @@ public class RobotCompletionContributor extends CompletionContributor {
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
         Collection<KeywordFile> importedFiles = robotFile.getImportedFiles(includeTransitive);
         for (KeywordFile f : importedFiles) {
-            addVariablesToResult(f.getDefinedVariables(), result, position);
+            if (f.getImportType() == ImportType.VARIABLES) {
+                addVariablesToResult(f.getDefinedVariables(), result, position);
+            }
         }
     }
 

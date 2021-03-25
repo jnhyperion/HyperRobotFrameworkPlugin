@@ -31,13 +31,8 @@ public class RobotKeywordNotFound extends SimpleRobotInspection {
             if (reference != null && reference.resolve() != null) {
                 return true;
             }
-
-            String text = ((KeywordInvokable) element).getPresentableText();
-            final String[] RESERVED_KW = {"FOR", "END", "IF", "ELSE", "ELSE IF"};
-            return Arrays.asList(RESERVED_KW).contains(text);
-        } else {
-            return true;
         }
+        return true;
     }
 
     @Override

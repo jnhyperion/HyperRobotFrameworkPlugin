@@ -4,6 +4,7 @@ import com.github.jnhyperion.hyperrobotframeworkplugin.psi.dto.ImportType;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.dto.KeywordDto;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.dto.VariableDto;
 import com.github.jnhyperion.hyperrobotframeworkplugin.psi.util.PerformanceCollector;
+import com.github.jnhyperion.hyperrobotframeworkplugin.psi.util.ReservedVariableScope;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
@@ -72,7 +73,8 @@ public class RobotPythonFile extends RobotPythonWrapper implements KeywordFile, 
             String keyword = expression.getName();
             if (keyword != null) {
                 // not formatted ${X}, assume scalar
-                results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword), null));
+                results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword),
+                        ReservedVariableScope.TestCase));
             }
         }
         for (PyClass subClass : this.pythonFile.getTopLevelClasses()) {

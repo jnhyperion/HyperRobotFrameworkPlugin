@@ -63,6 +63,7 @@ public class RobotColorsPage implements ColorSettingsPage {
             new AttributesDescriptor(RobotBundle.message("color.settings.argument"), RobotHighlighter.ARGUMENT),
             new AttributesDescriptor(RobotBundle.message("color.settings.error"), RobotHighlighter.ERROR),
             new AttributesDescriptor(RobotBundle.message("color.settings.gherkin"), RobotHighlighter.GHERKIN),
+            new AttributesDescriptor(RobotBundle.message("color.settings.syntaxMarker"), RobotHighlighter.SYNTAX_MARKER),
             new AttributesDescriptor(RobotBundle.message("color.settings.variable"), RobotHighlighter.VARIABLE),
             new AttributesDescriptor(RobotBundle.message("color.settings.variableDefinition"), RobotHighlighter.VARIABLE_DEFINITION),
             new AttributesDescriptor(RobotBundle.message("color.settings.keyword"), RobotHighlighter.KEYWORD),

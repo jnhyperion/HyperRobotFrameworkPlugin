@@ -22,7 +22,8 @@ public class RobotParserDefinition implements ParserDefinition {
 
     private static final TokenSet WHITESPACE_SET = TokenSet.create(RobotTokenTypes.WHITESPACE);
     private static final TokenSet COMMENTS_SET = TokenSet.create(RobotTokenTypes.COMMENT);
-    private static final TokenSet STRING_SET = TokenSet.create(RobotTokenTypes.GHERKIN);
+    private static final TokenSet STRING_SET = TokenSet.create(RobotTokenTypes.GHERKIN,
+            RobotTokenTypes.SYNTAX_MARKER);
 
     @NotNull
     @Override

@@ -1,9 +1,8 @@
 # HyperRobotFrameworkPlugin
 <!-- Plugin description -->
-Robot Framework JetBrains IDE plugin.
+Robot Framework plugin for IntelliJ-based IDEs.
 
 Forked from https://github.com/mtrubs/intellibot
-<!-- Plugin description end -->
 ## Features
 * ##### Syntax Highlighting
     ![](docs/imgs/syntax_highlighting.png)
@@ -13,3 +12,4 @@ Forked from https://github.com/mtrubs/intellibot
     ![](docs/imgs/cases_execution.png)
 * ##### Supported Resource File
 * ##### Supported IF/ELSE Syntax
+<!-- Plugin description end -->

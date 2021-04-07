@@ -17,8 +17,6 @@ import javax.swing.*;
  */
 public class RobotConfiguration implements SearchableConfigurable, Configurable.NoScroll {
 
-    final private RobotOptionsProvider provider;
-
     private JPanel panel;
     private JCheckBox enableDebug;
     private JCheckBox allowTransitiveImports;
@@ -26,9 +24,14 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox capitalizeKeywords;
     private JCheckBox inlineVariableSearch;
 
-    public RobotConfiguration() {
-        Project project = ProjectManager.getInstance().getOpenProjects()[0];
-        this.provider = RobotOptionsProvider.getInstance(project);
+    @Nullable
+    private RobotOptionsProvider getOptionProvider() {
+        Project[] projects = ProjectManager.getInstance().getOpenProjects();
+        if (projects.length > 0) {
+            return RobotOptionsProvider.getInstance(projects[0]);
+        } else {
+            return null;
+        }
     }
 
     @NotNull
@@ -63,29 +66,40 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
 
     @Override
     public boolean isModified() {
-        return this.provider.isDebug() != this.enableDebug.isSelected() ||
-                this.provider.allowTransitiveImports() != this.allowTransitiveImports.isSelected() ||
-                this.provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected() ||
-                this.provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected() ||
-                this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected();
+        RobotOptionsProvider provider = getOptionProvider();
+        if (provider != null) {
+            return provider.isDebug() != this.enableDebug.isSelected() ||
+                    provider.allowTransitiveImports() != this.allowTransitiveImports.isSelected() ||
+                    provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected() ||
+                    provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected() ||
+                    provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected();
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        this.provider.setDebug(this.enableDebug.isSelected());
-        this.provider.setTransitiveImports(this.allowTransitiveImports.isSelected());
-        this.provider.setGlobalVariables(this.allowGlobalVariables.isSelected());
-        this.provider.setCapitalizeKeywords(this.capitalizeKeywords.isSelected());
-        this.provider.setInlineVariableSearch(this.inlineVariableSearch.isSelected());
+        RobotOptionsProvider provider = getOptionProvider();
+        if (provider != null) {
+            provider.setDebug(this.enableDebug.isSelected());
+            provider.setTransitiveImports(this.allowTransitiveImports.isSelected());
+            provider.setGlobalVariables(this.allowGlobalVariables.isSelected());
+            provider.setCapitalizeKeywords(this.capitalizeKeywords.isSelected());
+            provider.setInlineVariableSearch(this.inlineVariableSearch.isSelected());
+        }
     }
 
     @Override
     public void reset() {
-        this.enableDebug.setSelected(this.provider.isDebug());
-        this.allowTransitiveImports.setSelected(this.provider.allowTransitiveImports());
-        this.allowGlobalVariables.setSelected(this.provider.allowGlobalVariables());
-        this.capitalizeKeywords.setSelected(this.provider.capitalizeKeywords());
-        this.inlineVariableSearch.setSelected(this.provider.inlineVariableSearch());
+        RobotOptionsProvider provider = getOptionProvider();
+        if (provider != null) {
+            this.enableDebug.setSelected(provider.isDebug());
+            this.allowTransitiveImports.setSelected(provider.allowTransitiveImports());
+            this.allowGlobalVariables.setSelected(provider.allowGlobalVariables());
+            this.capitalizeKeywords.setSelected(provider.capitalizeKeywords());
+            this.inlineVariableSearch.setSelected(provider.inlineVariableSearch());
+        }
     }
 
     @Override

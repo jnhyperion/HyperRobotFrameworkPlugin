@@ -3,6 +3,8 @@ package com.github.jnhyperion.hyperrobotframeworkplugin.ide.config;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +17,7 @@ import javax.swing.*;
  */
 public class RobotConfiguration implements SearchableConfigurable, Configurable.NoScroll {
 
-    private RobotOptionsProvider provider;
+    final private RobotOptionsProvider provider;
 
     private JPanel panel;
     private JCheckBox enableDebug;
@@ -24,8 +26,9 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox capitalizeKeywords;
     private JCheckBox inlineVariableSearch;
 
-    public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
-        this.provider = provider;
+    public RobotConfiguration() {
+        Project project = ProjectManager.getInstance().getOpenProjects()[0];
+        this.provider = RobotOptionsProvider.getInstance(project);
     }
 
     @NotNull

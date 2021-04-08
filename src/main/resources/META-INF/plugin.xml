@@ -9,9 +9,6 @@
 
     <change-notes>Initial release of the Hyper RobotFramework Support plugin.</change-notes>
 
-
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.python</depends>
     <depends>PythonCore</depends>
 

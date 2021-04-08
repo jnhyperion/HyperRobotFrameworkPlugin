@@ -1,6 +1,6 @@
 # HyperRobotFrameworkPlugin
 <!-- Plugin description -->
-Robot Framework plugin for IntelliJ-based IDEs.
+Robot Framework plugin for PyCharm.
 
 Forked from https://github.com/mtrubs/intellibot
 ## Features

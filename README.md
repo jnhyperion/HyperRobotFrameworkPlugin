@@ -12,4 +12,6 @@ Forked from https://github.com/mtrubs/intellibot
     ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/cases_execution.png)
 * ##### Supported Resource File
 * ##### Supported IF/ELSE Syntax
+* ##### By Me A Coffee
+    ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/qr.png)
 <!-- Plugin description end -->

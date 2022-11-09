@@ -30,8 +30,10 @@ public class RobotRunConfigurationProducer extends LazyRunConfigurationProducer<
             runConfig.setUseModuleSdk(false);
             runConfig.setModuleMode(true);
             runConfig.setScriptName("robot.run");
-            runConfig.setWorkingDirectory(context.getProject().getBasePath());
-            runConfig.setScriptParameters(runParam);
+            if (runConfig.getWorkingDirectory() == null || runConfig.getWorkingDirectory().isEmpty()) {
+                runConfig.setWorkingDirectory(context.getProject().getBasePath());
+            }
+            runConfig.setScriptParameters(runConfig.getScriptParameters() + " " + runParam);
             Sdk sdk = ProjectRootManager.getInstance(context.getProject()).getProjectSdk();
             if (sdk != null) {
                 runConfig.setSdkHome(sdk.getHomePath());

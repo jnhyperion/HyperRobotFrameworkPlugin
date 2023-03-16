@@ -2,7 +2,7 @@
 <!-- Plugin description -->
 Robot Framework plugin for PyCharm.
 
-## By Me A Coffee
+## Buy Me A Coffee
 ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/qr.png)
 ## Features
 ### Syntax Highlighting

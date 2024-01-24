@@ -2,8 +2,8 @@
 <!-- Plugin description -->
 Robot Framework plugin for PyCharm.
 
-## Buy Me A Coffee
-![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/qr.png)
+❤️ If you like this plugin, please leave your [review](https://plugins.jetbrains.com/plugin/16382-hyper-robotframework-support/reviews/new) with five ⭐ stars, also, please ⭐ star my github [project](https://github.com/jnhyperion/HyperRobotFrameworkPlugin) 🙏.
+
 ## Features
 ### Syntax Highlighting
 ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/syntax_highlighting.png)
@@ -11,6 +11,8 @@ Robot Framework plugin for PyCharm.
 ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/auto_suggestion.png)
 ### Easy Test Execution
 ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/cases_execution.png)
+### Debugging In Python Code
+![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/debug.png)
 ### Keyword Navigation
 ![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/keyword_navigation.png)
 ### Find Keyword Usages
@@ -27,3 +29,6 @@ Robot Framework plugin for PyCharm.
   * https://github.com/jnhyperion/HyperRobotFrameworkPlugin/issues
 
 <!-- Plugin description end -->
+
+## Buy Me A Coffee
+![](https://raw.githubusercontent.com/jnhyperion/HyperRobotFrameworkPlugin/main/docs/imgs/qr.png)
